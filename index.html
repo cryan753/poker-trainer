@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1419">
+<meta name="description" content="Free poker practice with configurable opponents, positions, stacks, cash and tournament hands, and immediate heuristic reviews.">
+<title>River 90 · Poker Table Lab</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app"><div class="boot">♠<h1>River 90 <span>Table Lab</span></h1><p>Opening your practice room…</p><div class="boot-instructions"><p>Free browser practice. No Replit, subscription, account or API key needed to play.</p><noscript><p><strong>JavaScript is required.</strong> Open this website in a current browser with JavaScript enabled.</p></noscript><div id="boot-help" style="display:none"><h2>Startup needs attention</h2><p id="boot-detail"></p><p>Refresh the page. If this message persists, share the message shown here. Do not turn off your security protections.</p></div></div></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+ var ready=false,lastError='',timeout;
+ function message(text){var el=document.getElementById('boot-help'),detail=document.getElementById('boot-detail');if(el)el.style.display='block';if(detail)detail.textContent=text;}
+ window.RiverBoot={ready:function(){ready=true;clearTimeout(timeout);},error:function(text){lastError=String(text);if(!ready)message(lastError);}};
+ window.addEventListener('error',function(e){if(!ready)window.RiverBoot.error(e.message||'A startup script did not load. Refresh this page.');});
+ window.addEventListener('unhandledrejection',function(e){if(!ready)window.RiverBoot.error(e.reason&&e.reason.message||e.reason||'Startup interrupted.');});
+ timeout=setTimeout(function(){if(!ready)message(lastError||'The app has not started. Refresh this website in Microsoft Edge or Google Chrome. If the problem persists, share this message.');},5000);
+})();
+</script>
+<script src="./engine.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
