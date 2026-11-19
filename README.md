@@ -1,6 +1,6 @@
 # River 90 — Decision Lab
 
-[Open your poker trainer](https://cryan753.github.io/poker-trainer/?v=3.0.0)
+[Open your poker trainer](https://cryan753.github.io/poker-trainer/?v=3.0.1)
 
 Free browser-based no-limit Texas Hold’em practice for a laptop or phone. No Replit subscription, account, paid API, or installation is required. Practice chips only.
 

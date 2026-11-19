@@ -363,7 +363,7 @@
     let moves=0,nextDecision=null;
     while(!h.done&&moves++<180){
       const pv=h.view(h.turn),dist=policy(pv,opts);
-      if(!nextDecision&&h.turn===v.seat&&h.street>v.street)nextDecision={street:h.street,board:h.board.slice(),call:pv.legal.call,dist:dist.map(a=>({kind:a.kind,probability:a.probability,total:a.total})),pot:pv.pot};
+      if(!nextDecision&&h.turn===v.seat&&h.street>v.street)nextDecision={street:h.street,board:h.board.slice(),call:pv.legal.call,currentBet:pv.currentBet,dist:dist.map(a=>({kind:a.kind,probability:a.probability,total:a.total})),pot:pv.pot};
       apply(h,pick(dist,random));
     }
     if(!h.done)throw Error('Continuation policy exceeded its betting limit.');
@@ -400,7 +400,7 @@
     else change='no board pair, new overcard or third suited card';
     const facing=next.call>0?'facing a bet':'no bet to call',key=next.street+'|'+change+'|'+facing;
     let group=row.continuationMap.get(key);
-    if(!group){group={street:next.street,change,facing,visits:0,call:0,pot:0,examples:[],mix:{fold:0,check:0,call:0,raise:0}};row.continuationMap.set(key,group);}
+    if(!group){group={street:next.street,change,facing,aggressiveAction:next.currentBet===0?'bet':'raise',visits:0,call:0,pot:0,examples:[],mix:{fold:0,check:0,call:0,raise:0}};row.continuationMap.set(key,group);}
     group.visits++;group.call+=next.call/v.bb;group.pot+=next.pot/v.bb;
     const example=cardText(added);if(group.examples.length<3&&!group.examples.includes(example))group.examples.push(example);
     for(const a of next.dist)group.mix[a.kind]+=a.probability;
@@ -493,7 +493,7 @@
       function examples(kind){return [...row.exampleMaps[kind]].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([cards,mass])=>cards+' · '+fmt(100*mass/Math.max(1e-12,row.responseWeight))+'% of next-response mass');}
       row.examples={calls:examples('call'),folds:examples('fold'),raises:examples('raise'),worseCalls:examples('worseCalls'),betterCalls:examples('betterCalls'),equalCalls:examples('equalCalls'),betterFolds:examples('betterFolds')};
       row.evidence={weakerCallProbability:sum([...row.exampleMaps.worseCalls.values()])/Math.max(1e-12,row.responseWeight),strongerCallProbability:sum([...row.exampleMaps.betterCalls.values()])/Math.max(1e-12,row.responseWeight),betterFoldProbability:sum([...row.exampleMaps.betterFolds.values()])/Math.max(1e-12,row.responseWeight),comparison:v.street===3?'showdown hand strength':v.street?'current made hand only; draws can improve':'not classified preflop'};
-      row.continuations=[...row.continuationMap.values()].sort((a,b)=>b.visits-a.visits).slice(0,4).map(g=>({street:g.street,change:g.change,facing:g.facing,samples:g.visits,averageCall:g.call/g.visits,averagePot:g.pot/g.visits,exampleCards:g.examples,mix:Object.fromEntries(Object.entries(g.mix).map(([k,x])=>[k,x/g.visits]))}));
+      row.continuations=[...row.continuationMap.values()].sort((a,b)=>b.visits-a.visits).slice(0,4).map(g=>({street:g.street,change:g.change,facing:g.facing,aggressiveAction:g.aggressiveAction,samples:g.visits,averageCall:g.call/g.visits,averagePot:g.pot/g.visits,exampleCards:g.examples,mix:Object.fromEntries(Object.entries(g.mix).map(([k,x])=>[k,x/g.visits]))}));
       delete row.values;delete row.chipValues;delete row.exampleMaps;delete row.responseWeight;delete row.continuationMap;
     }
     const loss=Math.max(0,best.ev-actual.ev),margin=actual.pairedLossSE*2;
@@ -519,7 +519,7 @@
     const nextStreet=[];
     if(v.street<3){
       for(const g of best.continuations.slice(0,3)){
-        const mix=Object.entries(g.mix).filter(([,x])=>x>=.01).sort((a,b)=>b[1]-a[1]).map(([kind,x])=>kind+' '+fmt(x*100)+'%').join(', ');
+        const mix=Object.entries(g.mix).filter(([,x])=>x>=.01).sort((a,b)=>b[1]-a[1]).map(([kind,x])=>(kind==='raise'?g.aggressiveAction:kind)+' '+fmt(x*100)+'%').join(', ');
         nextStreet.push('Continuation assumed after '+best.label.toLowerCase()+': '+Poker.STREETS[g.street]+', '+g.change+' (sampled new cards: '+g.exampleCards.join('; ')+'), '+g.facing+(g.averageCall?' averaging '+fmt(g.averageCall)+' BB':'')+' — '+mix+'. This group contains '+g.samples+' sampled next decisions, not a solved future strategy.');
       }
       if(heroInfo.f.flushDraw)nextStreet.push('If the flush completes, reassess board pairing and higher flushes before treating it as a value hand; the model includes opponent redraws and future calls.');

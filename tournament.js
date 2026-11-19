@@ -3,7 +3,7 @@
    Equal skill, static stacks/payouts; no bounty, future blind or positional adjustment. */
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.Poker.Tournament=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
 'use strict';
-const VERSION='3.0.0',cache=new Map(),MAX_PLAYERS=64,EXACT_LIMIT=10;
+const VERSION='3.0.1',cache=new Map(),MAX_PLAYERS=64,EXACT_LIMIT=10;
 function rng(seed){let x=seed>>>0;return()=>{x+=0x6D2B79F5;let t=x;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
 function normalized(stacks,payouts){
  if(!Array.isArray(stacks)||stacks.length<1||stacks.length>MAX_PLAYERS)throw Error('ICM needs 1–64 remaining players, including other tables.');

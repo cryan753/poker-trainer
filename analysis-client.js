@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const P=root.Poker;if(!P)return;
-const VERSION='3.0.0',cache=new Map(),queue=[];
+const VERSION='3.0.1',cache=new Map(),queue=[];
 let worker=null,active=null,sequence=0,noWorker=false,timer=null;
 function cancelled(){const e=new Error('Analysis cancelled.');e.name='AbortError';return e;}
 function publicInput(d){
