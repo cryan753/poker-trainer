@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1419">
-<meta name="description" content="Free poker practice with configurable opponents, positions, stacks, cash and tournament hands, and immediate heuristic reviews.">
+<meta name="description" content="Free poker practice with configurable opponents, positions, stacks, cash and tournament hands, and immediate decision-specific expected-value comparisons.">
 <title>River 90 · Poker Table Lab</title>
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./style.css?v=3.0.0">
+<link rel="stylesheet" href="./analysis.css?v=3.0.0">
 </head>
 <body>
 <div id="app"><div class="boot">♠<h1>River 90 <span>Table Lab</span></h1><p>Opening your practice room…</p><div class="boot-instructions"><p>Free browser practice. No Replit, subscription, account or API key needed to play.</p><noscript><p><strong>JavaScript is required.</strong> Open this website in a current browser with JavaScript enabled.</p></noscript><div id="boot-help" style="display:none"><h2>Startup needs attention</h2><p id="boot-detail"></p><p>Refresh the page. If this message persists, share the message shown here. Do not turn off your security protections.</p></div></div></div></div>
@@ -21,9 +22,15 @@
  timeout=setTimeout(function(){if(!ready)message(lastError||'The app has not started. Refresh this website in Microsoft Edge or Google Chrome. If the problem persists, share this message.');},5000);
 })();
 </script>
-<script src="./engine.js"></script>
-<script src="./legends.js?v=1.0.0"></script>
-<script src="./deep-coach.js?v=1.0.0"></script>
-<script src="./app.js"></script>
+<script src="./engine.js?v=3.0.0"></script>
+<script src="./legends.js?v=3.0.0"></script>
+<script src="./tournament.js?v=3.0.0"></script>
+<script src="./analysis-core.js?v=3.0.0"></script>
+<script src="./analysis-reference.js?v=3.0.0"></script>
+<script src="./analysis-client.js?v=3.0.0"></script>
+<script>if (Poker.Analysis.bot) Poker.bot = Poker.Analysis.bot;</script>
+<script src="./app.js?v=3.0.0"></script>
+<script src="./analysis-ui.js?v=3.0.0"></script>
 </body>
 </html>
+
